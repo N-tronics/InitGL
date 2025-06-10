@@ -1,6 +1,7 @@
 # An initializer lib for GLFW, GLAD, OpenGL development in C++
 
 ## Build instructions
+NOTE : You will have to have GLAD, GLFW, and OpenGL pre-installed on your system
 
 To build the library, first clone the repo and cd into it. Then execute
 
