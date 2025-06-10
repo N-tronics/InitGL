@@ -16,6 +16,8 @@ After building, you'll get a libInitGL.a file.
 
 ## Usage
 
+In your source code, include the InitGL.hpp header file
+
 When compiling your source code, add the libInitGL.a file along with source code files.
 
 ```bash
