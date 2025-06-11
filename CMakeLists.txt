@@ -6,6 +6,7 @@ cmake_policy(SET CMP0072 NEW)
 project(InitGL VERSION 1.0)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+set(CMAKE_BUILD_TYPE Debug)
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(GLM REQUIRED)

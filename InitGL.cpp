@@ -1,10 +1,10 @@
 #include "InitGL.hpp"
 #include <GLFW/glfw3.h>
 #include <cstdlib>
-#include <sstream>
-#include <fstream>
 #include <iostream>
+#include <stdexcept>
 
+namespace IGL {
 bool GL::initializeGLFW(void (*errorCallback)(int, const char*),
                         int contextVersionMajor,
                         int contextVersionMinor
@@ -27,7 +27,8 @@ void GL::glfwDefaultErrorCallback(int error, const char* desc) {
 }
 
 GL::GL(int contextVersionMajor, int contextVersionMinor) {
-    initializeGLFW(GL::glfwDefaultErrorCallback, contextVersionMajor, contextVersionMinor);
+    if (!initializeGLFW(GL::glfwDefaultErrorCallback, contextVersionMajor, contextVersionMinor))
+        throw std::runtime_error("Couldn't initialize GLFW.");
 }
 
 GLFWwindow *GL::createNewWindow(
@@ -66,80 +67,28 @@ void GL::setDisplayFunc(void (*_display)()) {
     display = _display;
 }
 
-GLuint GL::createProgram() {
-    GLuint program = glCreateProgram();
-    if (program == 0) return 0;
+void GL::registerProgram(const GLProgram& program) {
+    if (!glIsProgram(program.getID()))
+        throw std::runtime_error("Invalid program to be registered.");
     programs.push_back(program);
-    return program;
 }
 
-void GL::attachShaders(GLuint program, std::vector<ShaderInfo> shaderInfos) {
-    GLint status, logLength;
-
-    std::vector<GLuint> shaders;
-    for (ShaderInfo shaderInfo : shaderInfos) {
-        GLuint shader = glCreateShader(shaderInfo.type);
-        if (shader == 0) {
-            std::cout << "Loading Shader : " << shaderInfo.srcFile << " Failed." << std::endl;
-            exit(1);
-        }
-        std::ifstream shaderSrc(shaderInfo.srcFile);
-        if (!shaderSrc) {
-            std::cout << "Cannot open file : " << shaderInfo.srcFile << std::endl;
-            exit(1);
-        }
-        std::stringstream ssFileContents;
-        for (std::string line; std::getline(shaderSrc, line);)
-            ssFileContents << line << "\n";
-        shaderSrc.close();
-        std::string fileContents = ssFileContents.str();
-    
-        const char *c_str = fileContents.c_str();
-        glShaderSource(shader, 1, &c_str, NULL);
-
-        glCompileShader(shader);
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-        if (status != GL_TRUE) {
-            std::cout << "Compilation of " << shaderInfo.srcFile << " failed" << std::endl;
-            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
-            char infoLog[logLength + 1];
-            glGetShaderInfoLog(shader, sizeof(infoLog), NULL, infoLog);
-            std::cout << "LOG : " << std::endl << infoLog << std::endl;
-            exit(1);
-        }
-
-        glAttachShader(program, shader);
-        shaders.push_back(shader);
-    }
-
-    glLinkProgram(program);
-    glGetProgramiv(program, GL_LINK_STATUS, &status);
-    if (status != GL_TRUE) {
-        std::cout << "Linking of program failed" << std::endl;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
-        char infoLog[logLength + 1];
-        glGetProgramInfoLog(program, sizeof(infoLog), NULL, infoLog);
-        std::cout << "LOG : " << std::endl << infoLog << std::endl;
-        exit(1);
-    }
-    
-    for (GLuint shader : shaders)
-        glDeleteShader(shader);
-}
-
-void GL::activateProgram(GLuint program) {
-    if (!glIsProgram(program)) return;
-    glUseProgram(program);
+void GL::useProgram(const GLProgram& program) {
+    if (!glIsProgram(program.getID()))
+        throw std::runtime_error("Invalid program to be activated.");
+    glUseProgram(program.getID());
     activeProgram = program;
 }
 
-GLuint GL::getActiveProgram() {
-    return activeProgram;
+void GL::useProgram(unsigned int programIdx) {
+    if (programIdx >= programs.size())
+        throw std::runtime_error("Program index not valid.");
+    useProgram(programs[programIdx]);
 }
 
-const std::vector<GLuint>& GL::getPrograms() {
-    return programs;
-}
+const GLProgram& GL::getActiveProgram() const { return activeProgram; }
+
+const std::vector<GLProgram>& GL::getPrograms() const { return programs; }
 
 void GL::runLoop(GLFWwindow* window) {
     if (!window) {
@@ -163,7 +112,7 @@ void GL::destroyWindow(GLFWwindow* window) {
 }
 
 bool GL::setUniform1i(const std::string identifier, int value) {
-    GLint loc = glGetUniformLocation(getActiveProgram(), identifier.c_str());
+    GLint loc = glGetUniformLocation(activeProgram.getID(), identifier.c_str());
     if (loc == -1)
         return false;
     glUniform1i(loc, value);
@@ -171,7 +120,7 @@ bool GL::setUniform1i(const std::string identifier, int value) {
 }
 
 bool GL::setUniform1f(const std::string identifier, float value) {
-    GLint loc = glGetUniformLocation(getActiveProgram(), identifier.c_str());
+    GLint loc = glGetUniformLocation(activeProgram.getID(), identifier.c_str());
     if (loc == -1)
         return false;
     glUniform1f(loc, value);
@@ -180,9 +129,11 @@ bool GL::setUniform1f(const std::string identifier, float value) {
 
 GL::~GL() {
     for (auto program : programs)
-        glDeleteProgram(program);
+        glDeleteProgram(program.getID());
     for (auto window : windows) {
         glfwDestroyWindow(window);
     }
     glfwTerminate();
 }
+
+}   // namespace IGL

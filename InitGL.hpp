@@ -2,25 +2,21 @@
 
 #define GLFW_INCLUDE_NONE
 #include "gl/gl.h"
+#include "GLProgram.hpp"
 #include <GLFW/glfw3.h>
-#define STB_IMAGE_IMPLEMENTATION
 #include <vector>
 #include <string>
 
 #define BUFFER_OFFSET(offset) ((void*)(offset))
 
-typedef struct ShaderInfo {
-     GLenum type;
-     std::string srcFile;
-     ShaderInfo(GLenum _type, std::string _srcFile) : type(_type), srcFile(_srcFile) {}
-} ShaderInfo;
-    
+namespace IGL {
+
 class GL {
 private:
     std::vector<GLFWwindow*> windows;
     GLFWwindow* currentWindow;
-    std::vector<GLuint> programs;
-    GLuint activeProgram = 0;
+    std::vector<GLProgram> programs;
+    GLProgram activeProgram;
     
     bool initializeGLFW(void (*errorCallback)(int, const char*),
                         int contextVersionMajor,
@@ -42,12 +38,13 @@ public:
     void makeContextCurrent(GLFWwindow* window);
     GLFWwindow* getCurrentContext();
     void setDisplayFunc(void (*_display)());
+   
+    void registerProgram(const GLProgram& program);
+    void useProgram(const GLProgram& program);
+    void useProgram(unsigned int programIdx);
     
-    GLuint createProgram();
-    void attachShaders(GLuint program, std::vector<ShaderInfo> shaderInfos);
-    void activateProgram(GLuint program);
-    GLuint getActiveProgram();
-    const std::vector<GLuint>& getPrograms();
+    const GLProgram& getActiveProgram() const;
+    const std::vector<GLProgram>& getPrograms() const;
     
     void runLoop(GLFWwindow *window = NULL);
     void destroyWindow(GLFWwindow* window);
@@ -55,3 +52,5 @@ public:
     bool setUniform1i(const std::string identifier, int value);
     bool setUniform1f(const std::string identifier, float value);
 };
+
+}   // namespace IGL
