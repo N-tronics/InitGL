@@ -16,7 +16,6 @@ private:
     std::vector<GLFWwindow*> windows;
     GLFWwindow* currentWindow;
     std::vector<GLProgram> programs;
-    GLProgram activeProgram;
     
     bool initializeGLFW(void (*errorCallback)(int, const char*),
                         int contextVersionMajor,
@@ -26,6 +25,7 @@ private:
     void (*display)();
     
 public:   
+    GLProgram activeProgram;
     
     GL(int contextVersionMajor = 4, int contextVersionMinor = 3);
     ~GL();
@@ -48,9 +48,6 @@ public:
     
     void runLoop(GLFWwindow *window = NULL);
     void destroyWindow(GLFWwindow* window);
-
-    bool setUniform1i(const std::string identifier, int value);
-    bool setUniform1f(const std::string identifier, float value);
 };
 
 }   // namespace IGL

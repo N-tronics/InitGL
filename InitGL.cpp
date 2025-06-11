@@ -111,22 +111,6 @@ void GL::destroyWindow(GLFWwindow* window) {
     glfwDestroyWindow(window);
 }
 
-bool GL::setUniform1i(const std::string identifier, int value) {
-    GLint loc = glGetUniformLocation(activeProgram.getID(), identifier.c_str());
-    if (loc == -1)
-        return false;
-    glUniform1i(loc, value);
-    return true;
-}
-
-bool GL::setUniform1f(const std::string identifier, float value) {
-    GLint loc = glGetUniformLocation(activeProgram.getID(), identifier.c_str());
-    if (loc == -1)
-        return false;
-    glUniform1f(loc, value);
-    return true;
-}
-
 GL::~GL() {
     for (auto program : programs)
         glDeleteProgram(program.getID());

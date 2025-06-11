@@ -42,4 +42,20 @@ bool GLProgram::link(std::string& errors) const {
     return true;
 }
 
+bool GLProgram::setUniform1i(const std::string identifier, int value) {
+    GLint loc = glGetUniformLocation(program, identifier.c_str());
+    if (loc == -1)
+        return false;
+    glUniform1i(loc, value);
+    return true;
+}
+
+bool GLProgram::setUniform1f(const std::string identifier, float value) {
+    GLint loc = glGetUniformLocation(program, identifier.c_str());
+    if (loc == -1)
+        return false;
+    glUniform1f(loc, value);
+    return true;
+}
+
 }   // namespace IGL
