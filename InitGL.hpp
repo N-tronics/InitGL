@@ -22,6 +22,7 @@ private:
     );
     static void glfwDefaultErrorCallback(int error, const char* desc);
     void (*display)(float, float);
+    void (*frameCalculations)(float, float);
     
 public:   
     GLProgram activeProgram;
@@ -37,6 +38,7 @@ public:
     void makeContextCurrent(GLFWwindow* window);
     GLFWwindow* getCurrentContext();
     void setDisplayFunc(void (*_display)(float, float));
+    void setFrameCalculations(void (*_frameCalculations)(float, float));
    
     void registerProgram(const GLProgram& program);
     void useProgram(const GLProgram& program);

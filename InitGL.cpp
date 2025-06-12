@@ -63,6 +63,8 @@ GLFWwindow* GL::getCurrentContext() { return glfwGetCurrentContext(); }
 
 void GL::setDisplayFunc(void (*_display)(float, float)) { display = _display; }
 
+void GL::setFrameCalculations(void (*_frameCalculations)(float, float)) { frameCalculations = _frameCalculations; }
+
 void GL::registerProgram(const GLProgram& program) {
     if (!glIsProgram(program.getID()))
         throw std::runtime_error("Invalid program to be registered.");
@@ -98,6 +100,7 @@ void GL::runLoop(GLFWwindow* window) {
         float currentTime = glfwGetTime();
         float deltaTime = currentTime - lastTime;
         lastTime = currentTime;
+        frameCalculations(currentTime, deltaTime);
         display(currentTime, deltaTime);
 
         glfwSwapBuffers(window);
