@@ -5,7 +5,6 @@
 #include "GLProgram.hpp"
 #include <GLFW/glfw3.h>
 #include <vector>
-#include <string>
 
 #define BUFFER_OFFSET(offset) ((void*)(offset))
 
@@ -22,7 +21,7 @@ private:
                         int contextVersionMinor
     );
     static void glfwDefaultErrorCallback(int error, const char* desc);
-    void (*display)();
+    void (*display)(float, float);
     
 public:   
     GLProgram activeProgram;
@@ -37,7 +36,7 @@ public:
     );
     void makeContextCurrent(GLFWwindow* window);
     GLFWwindow* getCurrentContext();
-    void setDisplayFunc(void (*_display)());
+    void setDisplayFunc(void (*_display)(float, float));
    
     void registerProgram(const GLProgram& program);
     void useProgram(const GLProgram& program);

@@ -2,6 +2,7 @@
 
 #include "gl/gl.h"
 #include "GLShader.hpp"
+#include <glm/glm.hpp>
 #include <vector>
 #include <string>
 
@@ -19,9 +20,11 @@ public:
     void attachShaders(const std::vector<GLShader>& shaders);
     void attachShader(const GLShader& shader);
     bool link(std::string& errors) const;
-
-    bool setUniform1i(const std::string identifier, int value);
-    bool setUniform1f(const std::string identifier, float value);
+    
+    GLint getUinformLoc(const std::string identifier) const;
+    bool setUniform1i(const std::string identifier, int value) const;
+    bool setUniform1f(const std::string identifier, float value) const;
+    bool setUniformMat4fv(const std::string identifier, glm::mat4 mat) const;
 };
 
 }

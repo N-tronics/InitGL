@@ -59,13 +59,9 @@ void GL::makeContextCurrent(GLFWwindow* window) {
     currentWindow = window;
 }
 
-GLFWwindow* GL::getCurrentContext() {
-    return glfwGetCurrentContext();
-}
+GLFWwindow* GL::getCurrentContext() { return glfwGetCurrentContext(); }
 
-void GL::setDisplayFunc(void (*_display)()) {
-    display = _display;
-}
+void GL::setDisplayFunc(void (*_display)(float, float)) { display = _display; }
 
 void GL::registerProgram(const GLProgram& program) {
     if (!glIsProgram(program.getID()))
@@ -97,8 +93,12 @@ void GL::runLoop(GLFWwindow* window) {
         else
             window = currentWindow;
     }
+    float lastTime = 0.0f;
     while (!glfwWindowShouldClose(window)) {
-        display();
+        float currentTime = glfwGetTime();
+        float deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+        display(currentTime, deltaTime);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

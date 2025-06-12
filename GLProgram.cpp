@@ -1,4 +1,6 @@
 #include "GLProgram.hpp"
+#include "InitGL.hpp"
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <cstdlib>
 
@@ -42,19 +44,29 @@ bool GLProgram::link(std::string& errors) const {
     return true;
 }
 
-bool GLProgram::setUniform1i(const std::string identifier, int value) {
-    GLint loc = glGetUniformLocation(program, identifier.c_str());
+GLint GLProgram::getUinformLoc(const std::string identifier) const { return glGetUniformLocation(program, identifier.c_str()); }
+
+bool GLProgram::setUniform1i(const std::string identifier, int value) const {
+    GLint loc = getUinformLoc(identifier);
     if (loc == -1)
         return false;
     glUniform1i(loc, value);
     return true;
 }
 
-bool GLProgram::setUniform1f(const std::string identifier, float value) {
-    GLint loc = glGetUniformLocation(program, identifier.c_str());
+bool GLProgram::setUniform1f(const std::string identifier, float value) const {
+    GLint loc = getUinformLoc(identifier);
     if (loc == -1)
         return false;
     glUniform1f(loc, value);
+    return true;
+}
+    
+bool GLProgram::setUniformMat4fv(const std::string identifier, glm::mat4 mat) const {
+    GLint loc = getUinformLoc(identifier);
+    if (loc == -1)
+        return false;
+    glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(mat));
     return true;
 }
 
