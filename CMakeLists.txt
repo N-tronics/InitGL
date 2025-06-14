@@ -7,12 +7,14 @@ project(InitGL VERSION 1.0)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(GLM REQUIRED)
 
 file(GLOB_RECURSE SRC_FILES *.cpp gl/gl.c)
 add_library(InitGL STATIC ${SRC_FILES})
+target_include_directories(InitGL PUBLIC libs/include)
 target_link_libraries(InitGL PUBLIC
     ${GLFW3_LIBRARY}
     ${GLM_LIBRARY}

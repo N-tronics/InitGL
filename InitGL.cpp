@@ -100,8 +100,9 @@ void GL::runLoop(GLFWwindow* window) {
         float currentTime = glfwGetTime();
         float deltaTime = currentTime - lastTime;
         lastTime = currentTime;
-        frameCalculations(currentTime, deltaTime);
-        display(currentTime, deltaTime);
+        
+        if (frameCalculations) frameCalculations(currentTime, deltaTime);
+        if (display) display(currentTime, deltaTime);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

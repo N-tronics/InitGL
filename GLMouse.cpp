@@ -8,8 +8,8 @@ double GLMouse::lastX = 0.0f, GLMouse::lastY = 0.0f;
 double GLMouse::dx = 0.0f, GLMouse::dy = 0.0f;
 double GLMouse::scrollDX = 0.0f, GLMouse::scrollDY = 0.0f;
 bool GLMouse::firstMouse = true;
-bool GLMouse::buttons[GLFW_MOUSE_BUTTON_LAST] { 0 };
-bool GLMouse::buttonsChanged[GLFW_MOUSE_BUTTON_LAST] { 0 };
+bool GLMouse::buttons[GLFW_MOUSE_BUTTON_LAST] { false };
+bool GLMouse::buttonsChanged[GLFW_MOUSE_BUTTON_LAST] { false };
 
 void GLMouse::posCallback(GLFWwindow *window, double xpos, double ypos) {
     x = xpos;

@@ -3,17 +3,16 @@
 #define GLFW_INCLUDE_NONE
 #include "gl/gl.h"
 #include "GLProgram.hpp"
+#include"__defs__.hpp"
 #include <GLFW/glfw3.h>
 #include <vector>
-
-#define BUFFER_OFFSET(offset) ((void*)(offset))
 
 namespace IGL {
 
 class GL {
 private:
     std::vector<GLFWwindow*> windows;
-    GLFWwindow* currentWindow;
+    GLFWwindow* currentWindow = NULL;
     std::vector<GLProgram> programs;
     
     bool initializeGLFW(void (*errorCallback)(int, const char*),
@@ -21,8 +20,8 @@ private:
                         int contextVersionMinor
     );
     static void glfwDefaultErrorCallback(int error, const char* desc);
-    void (*display)(float, float);
-    void (*frameCalculations)(float, float);
+    void (*display)(float, float) = NULL;
+    void (*frameCalculations)(float, float) = NULL;
     
 public:   
     GLProgram activeProgram;

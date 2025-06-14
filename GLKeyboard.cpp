@@ -3,8 +3,8 @@
 
 namespace IGL {
 
-bool GLKeyboard::keys[GLFW_KEY_LAST] { 0 };
-bool GLKeyboard::keysChanged[GLFW_KEY_LAST] { 0 };
+bool GLKeyboard::keys[GLFW_KEY_LAST] { false };
+bool GLKeyboard::keysChanged[GLFW_KEY_LAST] { false };
 
 void GLKeyboard::keyCallback(GLFWwindow *window, int keycode, int scancode, int action, int mods) {
     if (action != GLFW_RELEASE && !keys[keycode]) {
